@@ -1,0 +1,2 @@
+module Xgpush
+end
