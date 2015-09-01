@@ -3,7 +3,7 @@ require 'xgpush/general'
 
 describe 'General methods' do
   before do
-    @request = Xgpush::General.new
+    @request = QQpush::General.new
     @request.settings = { access_id: '123' }
   end
 

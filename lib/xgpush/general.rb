@@ -2,7 +2,7 @@ require 'uri'
 require 'openssl'
 require 'rest-client'
 
-module Xgpush
+module QQpush
   class General
     attr_accessor :settings
 

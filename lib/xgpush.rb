@@ -1,5 +1,5 @@
 require 'xgpush/android'
 require 'xgpush/ios'
 
-module Xgpush
+module QQpush
 end

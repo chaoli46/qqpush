@@ -24,7 +24,7 @@ end
 desc 'build gem'
 task :build do
   Dir.glob('*push-*.gem').each { |f| File.delete(f) }
-  puts `bundle exec gem build xgpush.gemspec`
+  puts `bundle exec gem build qqpush.gemspec`
 end
 
 desc 'publish gem'
