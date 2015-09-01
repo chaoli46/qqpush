@@ -6,7 +6,7 @@ require 'yaml'
 
 module QQpush
   class General
-    attr_accessor :settings
+    attr_accessor :settings, :request_params
 
     PROTOCAL = 'http'
     ROOT_URL = 'openapi.xg.qq.com'
@@ -17,6 +17,7 @@ module QQpush
     SERVICES.each do |param_class, param_methods|
       param_methods.each do |param_method|
         define_method("#{param_class}_#{param_method}") do |params = {}|
+          params = request_params unless params.any?
           params[:param_request] = 'get'
           request(
             params.merge(param_class: param_class,
@@ -25,9 +26,10 @@ module QQpush
       end
     end
 
-    def initialize
+    def initialize(params = {})
       @settings =
         File.exist?('settings.yml') ? YAML.load_file('settings.yml') : {}
+      @request_params = params
     end
 
     def request(params = {})

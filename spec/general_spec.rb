@@ -17,8 +17,9 @@ describe 'General methods' do
   end
 
   it 'can push to single device' do
-    response = @request.push_single_device(
-      message_type: 1, message: { content: 'content', title: 'title' })
+    @request.request_params =
+      { message_type: 1, message: { content: 'content', title: 'title' } }
+    response = @request.push_single_device
     expect(response['ret_code']).to eq(-1)
     expect(response['err_msg']).to eq('param device_token error!')
   end
