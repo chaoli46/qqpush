@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'qqpush'
-  s.version = '0.0.6'
+  s.version = '0.0.7'
   s.date = '2015-08-31'
   s.summary = 'Tencent XG Push'
   s.description = 'App push service by Tencent XG'
