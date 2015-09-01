@@ -22,7 +22,8 @@ module Xgpush
     def request(params = {})
       RestClient.post
         request_url(params),
-        general_params(params).merge(business_params(params))
+        general_params(params).merge(business_params(params)).to_json,
+        content_type: 'application/x-www-form-urlencoded'
     end
 
     def request_url(params)
