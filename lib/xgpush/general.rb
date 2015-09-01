@@ -4,6 +4,8 @@ require 'rest-client'
 
 module Xgpush
   class General
+    attr_accessor :settings
+
     ROOT_URL = 'openapi.xg.qq.com'
     PROTOCAL = 'http'
     VERSION = 'v2'
@@ -20,10 +22,10 @@ module Xgpush
     end
 
     def request(params = {})
-      RestClient.post
+      RestClient.post(
         request_url(params),
         general_params(params).merge(business_params(params)).to_json,
-        content_type: 'application/x-www-form-urlencoded'
+        content_type: 'application/x-www-form-urlencoded')
     end
 
     def request_url(params)
@@ -33,31 +35,35 @@ module Xgpush
     end
 
     def general_params(params)
-      { access_id: settings[:access_id],
-        timestamp: Time.now.to_i,
-        valid_time: params[:valid_time],
-        sign: param_sign(params) }
+      base_params = { access_id: settings[:access_id],
+                      timestamp: params[:timestamp],
+                      valid_time: params[:valid_time] }
+      base_params[:timestamp] ||= Time.now.to_i
+      all_params = params.merge base_params
+      base_params.merge(sign: param_sign(all_params))
     end
 
     def param_sign(params)
       sign_string = "POST#{ROOT_URL}/#{VERSION}/#{params[:param_class]}/" \
-        "#{params[:param_method]}#{params_string(params)}"
+        "#{params[:param_method]}#{params_string(params).gsub(/\&/, '')}" \
+        "#{params[:secret_key]}"
       OpenSSL::Digest::MD5.new(sign_string).to_s
     end
 
     private
 
     def business_params(params)
-      params.reject { |k, _v| k.to_s.split('_')[0] == 'param' }
+      params.reject { |k, _v| k.to_s =~ /param_.*/ || k == :secret_key }
     end
 
     def params_string(params)
       new_string = ''
-      business_params(params).keys.sort.each do |key|
-        next unless params[key]
-        value =
-          params[:param_encode] ? URI.encode(params[key]) : "#{params[key]}&"
-        new_string += "#{key}=#{value}"
+      business_params(params).keys.map(&:to_s).sort.each do |key|
+        next unless params[key] || params[key.to_sym]
+        value = [params[key], params[key.to_sym]].compact.first
+        new_value =
+          params[:param_encode] ? URI.encode(value) : "#{value}&"
+        new_string += "#{key}=#{new_value}" if new_value
       end
       new_string
     end

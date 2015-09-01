@@ -1,5 +1,5 @@
-require 'xgpush/android.rb'
-require 'xgpush/ios.rb'
+require 'xgpush/android'
+require 'xgpush/ios'
 
 module Xgpush
 end
