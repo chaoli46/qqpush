@@ -23,5 +23,21 @@ end
 
 desc 'build gem'
 task :build do
-  `bundle exec gem build xgpush.gemspec`
+  puts `bundle exec gem build xgpush.gemspec`
+end
+
+desc 'publish gem'
+task :push do
+  files = Dir.glob('*push-*.gem')
+  if files.size == 1
+    gem_file = files[0]
+    puts `bundle exec gem push #{gem_file}`
+  else
+    if files.size == 0
+      puts "No gem file. Run 'bundle exec rake build' at first."
+    else
+      puts 'Too many gem files:'
+      puts files
+    end
+  end
 end
