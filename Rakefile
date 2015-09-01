@@ -20,3 +20,8 @@ task :spec, :spec_name, :examples do |_t, args|
     execute_spec.call(nil)
   end
 end
+
+desc 'build gem'
+task :build do
+  `bundle exec gem build xgpush.gemspec`
+end
