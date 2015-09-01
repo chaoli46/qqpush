@@ -22,10 +22,10 @@ task :spec, :spec_name, :examples do |_t, args|
 end
 
 desc 'generate settings.yml'
-task :init do
+task :init, :access_id, :secret_key do |_t, args|
   require 'yaml'
   file = File.open('settings.yml', 'w+')
-  settings = { access_id: nil, secret_key: nil }.to_yaml
+  settings = { access_id: args.access_id, secret_key: args.secret_key }.to_yaml
   file.puts '# http://developer.xg.qq.com/index.php/Rest_API' \
     '#.E9.80.9A.E7.94.A8.E5.8F.82.E6.95.B0'
   file.puts settings

@@ -18,6 +18,13 @@ message.settings = { access_id: '555', secret_key: '888' }
 message.push_single_device
 ```
 
+## 测试
+
+```bash
+$ bundle exec rake init[your_access_id, your_secret_key]
+$ bundle exec rake test
+```
+
 ## 参考链接
 
 - [官网](http://xg.qq.com)
