@@ -21,6 +21,17 @@ task :spec, :spec_name, :examples do |_t, args|
   end
 end
 
+desc 'generate settings.yml'
+task :init do
+  require 'yaml'
+  file = File.open('settings.yml', 'w+')
+  settings = { access_id: nil, secret_key: nil }.to_yaml
+  file.puts '# http://developer.xg.qq.com/index.php/Rest_API'
+  file.puts settings
+  file.close
+  puts './settings.yml created.'
+end
+
 desc 'build gem'
 task :build do
   Dir.glob('*push-*.gem').each { |f| File.delete(f) }
