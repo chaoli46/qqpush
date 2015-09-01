@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'xgpush/general'
+require 'qqpush/general'
 
 describe 'General methods' do
   before do
