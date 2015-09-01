@@ -26,7 +26,8 @@ task :init do
   require 'yaml'
   file = File.open('settings.yml', 'w+')
   settings = { access_id: nil, secret_key: nil }.to_yaml
-  file.puts '# http://developer.xg.qq.com/index.php/Rest_API'
+  file.puts '# http://developer.xg.qq.com/index.php/Rest_API' \
+    '#.E9.80.9A.E7.94.A8.E5.8F.82.E6.95.B0'
   file.puts settings
   file.close
   puts './settings.yml created.'
