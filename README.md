@@ -12,7 +12,8 @@ message.request_params[:environment] = 1 if Rails.env.production?
 message.push_single_device
 
 # Android
-message = QQpush::Android.new(device_token: 'a123b', param_title: 'yo', param_content: 'joe')
+message = QQpush::Android.new(
+  device_token: 'a123b', param_title: 'yo', param_content: 'joe')
 message.settings = { access_id: '555', secret_key: '888' }
 message.push_single_device
 ```
