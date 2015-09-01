@@ -5,6 +5,7 @@ require 'json'
 require 'yaml'
 
 module QQpush
+  # General REST API
   class General
     attr_accessor :settings, :request_params
 
@@ -65,21 +66,24 @@ module QQpush
 
     private
 
-    def business_params(params)
-      params.reject { |k, _v| k.to_s =~ /param_.*/ }
-    end
-
     def params_string(params)
       new_string = ''
-      business_params(params).keys.map(&:to_s).sort.each do |key|
+      business_params_string_keys(params).each do |key|
         next unless params[key] || params[key.to_sym]
         value = [params[key], params[key.to_sym]].compact.first
-        value = value.is_a?(Hash) ? value.to_json : value.to_s
-        new_value =
-          params[:param_encode] ? "#{URI.encode(value)}&" : value
-        new_string += "#{key}=#{new_value}" if new_value
+        value = param_string_value(value)
+        new_value = params[:param_encode] ? "#{URI.encode(value)}&" : value
+        new_string += "#{key}=#{new_value}"
       end
       new_string
+    end
+
+    def business_params_string_keys(params)
+      params.reject { |k, _v| k.to_s =~ /param_.*/ }.keys.map(&:to_s).sort
+    end
+
+    def param_string_value(value)
+      value.is_a?(Hash) ? value.to_json : value.to_s
     end
   end
 end

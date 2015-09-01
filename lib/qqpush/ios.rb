@@ -1,4 +1,5 @@
 module QQpush
+  # iOS device
   class Ios < General
     def initialize(params = {})
       super

@@ -9,7 +9,7 @@ describe 'General methods' do
   it 'can generate sign by params' do
     # http://developer.xg.qq.com/index.php/Rest_API#.E9.80.9A.E7.94.A8.E5.8F.82.E6.95.B0
     @request.settings = { access_id: '123', secret_key: 'abcde' }
-    new_params = { timestamp: 1386691200, param_request: 'post',
+    new_params = { timestamp: '1386691200', param_request: 'post',
                    param_class: 'push', param_method: 'single_device',
                    'Param1' => 'Value1', 'Param2' => 'Value2' }
     params = @request.general_params(new_params)

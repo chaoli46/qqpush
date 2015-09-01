@@ -1,4 +1,5 @@
 module QQpush
+  # Android device
   class Android < General
     def initialize(params = {})
       super
