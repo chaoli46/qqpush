@@ -1,37 +1,46 @@
 require 'uri'
 require 'openssl'
 require 'rest-client'
+require 'json'
+require 'yaml'
 
 module QQpush
   class General
     attr_accessor :settings
 
-    ROOT_URL = 'openapi.xg.qq.com'
     PROTOCAL = 'http'
+    ROOT_URL = 'openapi.xg.qq.com'
     VERSION = 'v2'
-    SERVICES =
-      { push: %w(single_device single_account
-                 account_list all_device tags_device) }
+    SERVICES = { push: %w(single_device single_account
+                          account_list all_device tags_device) }
 
     SERVICES.each do |param_class, param_methods|
       param_methods.each do |param_method|
         define_method("#{param_class}_#{param_method}") do |params = {}|
-          request(params)
+          params[:param_request] = 'get'
+          request(
+            params.merge(param_class: param_class,
+                         param_method: param_method))
         end
       end
     end
 
+    def initialize
+      @settings =
+        File.exist?('settings.yml') ? YAML.load_file('settings.yml') : {}
+    end
+
     def request(params = {})
-      RestClient.post(
-        request_url(params),
-        general_params(params).merge(business_params(params)).to_json,
-        content_type: 'application/x-www-form-urlencoded')
+      response = RestClient.send(
+        params[:param_request], request_url(params))
+      JSON.parse response
     end
 
     def request_url(params)
       params[:param_encode] = true
+      all_params = params.merge(general_params(params))
       "#{PROTOCAL}://#{ROOT_URL}/#{VERSION}/#{params[:param_class]}/" \
-      "#{params[:param_method]}#{params_string(params).gsub(/\&$/, '')}"
+      "#{params[:param_method]}?#{params_string(all_params).gsub(/\&$/, '')}"
     end
 
     def general_params(params)
@@ -44,16 +53,18 @@ module QQpush
     end
 
     def param_sign(params)
-      sign_string = "POST#{ROOT_URL}/#{VERSION}/#{params[:param_class]}/" \
-        "#{params[:param_method]}#{params_string(params).gsub(/\&/, '')}" \
-        "#{params[:secret_key]}"
+      params.delete(:param_encode)
+      sign_string = "#{params[:param_request].upcase}" \
+        "#{ROOT_URL}/#{VERSION}/#{params[:param_class]}/" \
+        "#{params[:param_method]}#{params_string(params)}" \
+        "#{settings[:secret_key]}"
       OpenSSL::Digest::MD5.new(sign_string).to_s
     end
 
     private
 
     def business_params(params)
-      params.reject { |k, _v| k.to_s =~ /param_.*/ || k == :secret_key }
+      params.reject { |k, _v| k.to_s =~ /param_.*/ }
     end
 
     def params_string(params)
@@ -61,8 +72,9 @@ module QQpush
       business_params(params).keys.map(&:to_s).sort.each do |key|
         next unless params[key] || params[key.to_sym]
         value = [params[key], params[key.to_sym]].compact.first
+        value = value.is_a?(Hash) ? value.to_json : value.to_s
         new_value =
-          params[:param_encode] ? URI.encode(value) : "#{value}&"
+          params[:param_encode] ? "#{URI.encode(value)}&" : value
         new_string += "#{key}=#{new_value}" if new_value
       end
       new_string
