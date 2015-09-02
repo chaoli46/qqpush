@@ -22,7 +22,7 @@ message.push_single_device
 
 ```bash
 $ rake init[your_access_id, your_secret_key]
-$ rake test
+$ rake spec
 ```
 
 ## 参考链接
