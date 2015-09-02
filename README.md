@@ -21,8 +21,8 @@ message.push_single_device
 ## 测试
 
 ```bash
-$ rake init[your_access_id, your_secret_key]
-$ rake spec
+$ bundle exec rake init[your_access_id, your_secret_key]
+$ bundle exec rake spec
 ```
 
 ## 参考链接
